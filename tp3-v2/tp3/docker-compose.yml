@@ -10,10 +10,7 @@ services:
       - tp3_httpd2
     restart: always
     networks:
-      front_net:
-        aliases:
-          - tp3_httpd1
-          - tp3_httpd2
+      - front_net
 
   tp3_httpd1:
     image: httpd:2.4
@@ -23,10 +20,6 @@ services:
     networks:
       - front_net
       - back1_net
-    restart: always
-    depends_on:
-      - tp3_php1
-      - tp3_mysql1
 
   tp3_php1:
     build: ./php1
@@ -34,9 +27,6 @@ services:
       - ./serveur1/www/:/var/www/html/
     networks:
       - back1_net
-    restart: always
-    depends_on:
-      - tp3_mysql1
 
   tp3_httpd2:
     image: httpd:2.4
@@ -46,10 +36,6 @@ services:
     networks:
       - front_net
       - back2_net
-    restart: always
-    depends_on:
-      - tp3_php2
-      - tp3_mysql2
 
   tp3_php2:
     build: ./php2
@@ -57,9 +43,6 @@ services:
       - ./serveur2/www/:/var/www/html/
     networks:
       - back2_net
-    restart: always
-    depends_on:
-      - tp3_mysql2
 
   tp3_mysql1:
     image: mysql:8.0
@@ -70,10 +53,8 @@ services:
       MYSQL_PASSWORD: tp3pass
     volumes:
       - mysql1_data:/var/lib/mysql
-      - ./mysql1/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - back1_net
-    restart: always
 
   tp3_mysql2:
     image: mysql:8.0
@@ -84,10 +65,8 @@ services:
       MYSQL_PASSWORD: tp3pass
     volumes:
       - mysql2_data:/var/lib/mysql
-      - ./mysql2/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - back2_net
-    restart: always
 
 volumes:
   mysql1_data: {}
