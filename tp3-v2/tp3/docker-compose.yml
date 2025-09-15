@@ -53,6 +53,7 @@ services:
       MYSQL_PASSWORD: tp3pass
     volumes:
       - mysql1_data:/var/lib/mysql
+      - ./mysql1/:/docker-entrypoint-initdb.d/:ro
     networks:
       - back1_net
 
@@ -65,6 +66,7 @@ services:
       MYSQL_PASSWORD: tp3pass
     volumes:
       - mysql2_data:/var/lib/mysql
+      - ./mysql2/:/docker-entrypoint-initdb.d/:ro
     networks:
       - back2_net
 
