@@ -54,6 +54,7 @@ services:
     volumes:
       - mysql1_data:/var/lib/mysql
       - ./mysql1/:/docker-entrypoint-initdb.d/:ro
+      - ./mysql1/my.cnf:/etc/mysql/my.cnf:ro
     networks:
       - back1_net
 
@@ -67,6 +68,7 @@ services:
     volumes:
       - mysql2_data:/var/lib/mysql
       - ./mysql2/:/docker-entrypoint-initdb.d/:ro
+      - ./mysql2/my.cnf:/etc/mysql/my.cnf:ro
     networks:
       - back2_net
 

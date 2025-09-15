@@ -4,10 +4,16 @@ $host = $_SERVER['SERVER_NAME'] ?? 'N/A';
 $software = $_SERVER['SERVER_SOFTWARE'] ?? 'N/A';
 
 try {
-    $pdo = new PDO("mysql:host=tp3_mysql2;dbname=tp3db", "tp3user", "tp3pass");
-    $status = "<p class='success'>Connexion à la base de données réussie ✔</p>";
+    $pdo = new PDO("mysql:host=tp3_mysql1;dbname=tp3db;charset=utf8mb4", "tp3user", "tp3pass", [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ]);
+    $dbHost = $pdo->query("SELECT @@hostname AS hostname")->fetch()['hostname'] ?? 'unknown';
+    $row = $pdo->query("SELECT id, label FROM demo ORDER BY id DESC LIMIT 1")->fetch();
+    $label = $row ? ($row['label'] . " (id=" . $row['id'] . ")") : 'aucune donnée';
+    $status = "<p class='success'>Connexion MySQL ✔ — hôte DB: <strong>{$dbHost}</strong><br>Dernière entrée: <em>{$label}</em></p>";
 } catch (PDOException $e) {
-    $status = "<p class='error'>Erreur de connexion à MySQL : " . $e->getMessage() . "</p>";
+    $status = "<p class='error'>Erreur de connexion à MySQL : " . htmlspecialchars($e->getMessage()) . "</p>";
 }
 ?>
 
@@ -15,11 +21,11 @@ try {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Serveur 2</title>
+    <title>Serveur 1</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #fff3cd;
+            background: #f0f8ff;
             color: #333;
             max-width: 700px;
             margin: 40px auto;
@@ -28,8 +34,8 @@ try {
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
         h1 {
-            color: #fd7e14;
-            border-bottom: 2px solid #fd7e14;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
             padding-bottom: 10px;
         }
         p {
@@ -46,7 +52,7 @@ try {
     </style>
 </head>
 <body>
-    <h1>Bienvenue sur le serveur 2</h1>
+    <h1>Bienvenue sur le serveur 1</h1>
     <p><strong>IP du client :</strong> <?= $ip ?></p>
     <p><strong>Nom du serveur :</strong> <?= $host ?></p>
     <p><strong>Logiciel serveur :</strong> <?= $software ?></p>
