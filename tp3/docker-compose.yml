@@ -14,42 +14,55 @@ services:
 
   tp3_httpd1:
     image: httpd:2.4
+    container_name: tp3_httpd1
     volumes:
       - ./serveur1/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
       - ./serveur1/www/:/var/www/html/
     networks:
       - front_net
       - back1_net
+    depends_on:
+      - tp3_php1
+    restart: always
 
   tp3_php1:
     build: ./php1
+    container_name: tp3_php1
     volumes:
       - ./serveur1/www/:/var/www/html/
     networks:
       - back1_net
     depends_on:
       - tp3_mysql1
+    restart: always
 
   tp3_httpd2:
     image: httpd:2.4
+    container_name: tp3_httpd2
     volumes:
       - ./serveur2/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
       - ./serveur2/www/:/var/www/html/
     networks:
       - front_net
       - back2_net
+    depends_on:
+      - tp3_php2
+    restart: always
 
   tp3_php2:
     build: ./php2
+    container_name: tp3_php2
     volumes:
       - ./serveur2/www/:/var/www/html/
     networks:
       - back2_net
     depends_on:
       - tp3_mysql2
+    restart: always
 
   tp3_mysql1:
     image: mysql:8.0
+    container_name: tp3_mysql1
     environment:
       MYSQL_ROOT_PASSWORD: rootpass1
       MYSQL_DATABASE: tp3db
@@ -61,9 +74,11 @@ services:
       - ./mysql1/my.cnf:/etc/mysql/my.cnf:ro
     networks:
       - back1_net
+    restart: always
 
   tp3_mysql2:
     image: mysql:8.0
+    container_name: tp3_mysql2
     environment:
       MYSQL_ROOT_PASSWORD: rootpass2
       MYSQL_DATABASE: tp3db
@@ -75,6 +90,7 @@ services:
       - ./mysql2/my.cnf:/etc/mysql/my.cnf:ro
     networks:
       - back2_net
+    restart: always
 
 volumes:
   mysql1_data: {}
