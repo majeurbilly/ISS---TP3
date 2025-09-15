@@ -10,7 +10,7 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ];
     $attempts = 0;
-    $maxAttempts = 10;
+    $maxAttempts = 60; // up to ~18s (60 * 300ms)
     $pdo = null;
     while ($attempts < $maxAttempts) {
         try {
@@ -18,7 +18,7 @@ try {
             break;
         } catch (PDOException $inner) {
             $attempts++;
-            usleep(300000); // 300ms before retry
+            usleep(1000000); // 1s before retry (up to ~60s)
             if ($attempts >= $maxAttempts) {
                 throw $inner;
             }
