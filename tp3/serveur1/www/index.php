@@ -4,26 +4,10 @@ $host = $_SERVER['SERVER_NAME'] ?? 'N/A';
 $software = $_SERVER['SERVER_SOFTWARE'] ?? 'N/A';
 
 try {
-    $dsn = "mysql:host=tp3_mysql1;dbname=tp3db;charset=utf8mb4";
-    $options = [
+    $pdo = new PDO("mysql:host=tp3_mysql1;dbname=tp3db;charset=utf8mb4", "tp3user", "tp3pass", [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ];
-    $attempts = 0;
-    $maxAttempts = 60; // up to ~18s (60 * 300ms)
-    $pdo = null;
-    while ($attempts < $maxAttempts) {
-        try {
-            $pdo = new PDO($dsn, "tp3user", "tp3pass", $options);
-            break;
-        } catch (PDOException $inner) {
-            $attempts++;
-            usleep(1000000); // 1s before retry (up to ~60s)
-            if ($attempts >= $maxAttempts) {
-                throw $inner;
-            }
-        }
-    }
+    ]);
     $dbHost = $pdo->query("SELECT @@hostname AS hostname")->fetch()['hostname'] ?? 'unknown';
     $row = $pdo->query("SELECT id, label FROM demo ORDER BY id DESC LIMIT 1")->fetch();
     $label = $row ? ($row['label'] . " (id=" . $row['id'] . ")") : 'aucune donnée';
