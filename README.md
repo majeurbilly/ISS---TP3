@@ -61,6 +61,16 @@ www.tp3.com → Nginx (Équilibreur) → Serveur Apache 1/2 → PHP-FPM → MySQ
 - **back1_net** : Réseau arrière pour serveur 1 (Apache + PHP + MySQL)
 - **back2_net** : Réseau arrière pour serveur 2 (Apache + PHP + MySQL)
 
+### Configuration MySQL
+
+Chaque instance MySQL dispose d'une configuration personnalisée (`my.cnf`) optimisée pour l'environnement Docker :
+
+- **Charset** : UTF8MB4 avec collation unicode
+- **Performance** : Buffer pool InnoDB, logs optimisés
+- **Sécurité** : Mode SQL strict, désactivation des fonctions sensibles
+- **Monitoring** : Logs d'erreur et requêtes lentes activés
+- **Identification** : Server-id unique (1 et 2) pour la réplication future
+
 <details>
  <summary>
     <a href="#images">
@@ -79,7 +89,7 @@ www.tp3.com → Nginx (Équilibreur) → Serveur Apache 1/2 → PHP-FPM → MySQ
 - **Nginx** - Équilibreur de charge (Load Balancer)
 - **Apache (httpd)** - Serveurs web (2 instances identiques)
 - **PHP-FPM** - Processeurs PHP FastCGI (2 instances)
-- **MySQL** - Bases de données (2 instances avec volumes persistants)
+- **MySQL** - Bases de données (2 instances avec volumes persistants et configuration personnalisée)
 
 ## Démarrage
 
@@ -159,6 +169,10 @@ docker-compose logs nginx
 docker-compose logs tp3_httpd1
 docker-compose logs tp3_php1
 docker-compose logs tp3_mysql1
+
+# Logs MySQL détaillés (erreurs et requêtes lentes)
+docker-compose exec tp3_mysql1 tail -f /var/log/mysql/error.log
+docker-compose exec tp3_mysql1 tail -f /var/log/mysql/slow.log
 ```
 
 ### **Statut des Conteneurs**
@@ -181,9 +195,23 @@ docker network inspect tp3_back1_net
 docker network inspect tp3_back2_net
 ```
 
+### **Monitoring MySQL**
+```bash
+# Connexion aux bases de données
+docker-compose exec tp3_mysql1 mysql -u tp3user -ptp3pass tp3db
+docker-compose exec tp3_mysql2 mysql -u tp3user -ptp3pass tp3db
+
+# Vérifier la configuration MySQL
+docker-compose exec tp3_mysql1 mysql -u root -prootpass1 -e "SHOW VARIABLES LIKE 'server_id';"
+docker-compose exec tp3_mysql2 mysql -u root -prootpass2 -e "SHOW VARIABLES LIKE 'server_id';"
+
+# Vérifier les tables de démonstration
+docker-compose exec tp3_mysql1 mysql -u tp3user -ptp3pass tp3db -e "SELECT * FROM demo;"
+```
+
 ## Auteurs et Contributeurs
 
-- **Billy Major** - *Travail initial* - [majeurbilly](https://github.com/majeurbilly)
+- **majeurbilly** - *Travail initial* - [majeurbilly](https://github.com/majeurbilly)
 
 ## Remerciements
 
@@ -195,5 +223,19 @@ Remerciements :
 * [Documentation PHP-FPM](https://www.php.net/manual/en/install.fpm.php)
 * [Documentation MySQL](https://dev.mysql.com/doc/)
 * [Documentation Docker Compose](https://docs.docker.com/compose/)
+* [MySQL 8.0 — Using Option Files](https://dev.mysql.com/doc/refman/8.0/en/option-files.html)
+* [MySQL 8.0 — Server System Variables](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html)
+* [MySQL 8.0 — Character Set Support](https://dev.mysql.com/doc/refman/8.0/en/charset-general.html)
+* [Docker Hub — Official MySQL Image](https://hub.docker.com/_/mysql)
+* [PHP — PDO](https://www.php.net/manual/en/book.pdo.php) et [PDO_MySQL](https://www.php.net/manual/en/ref.pdo-mysql.php)
+* [Compose file reference](https://docs.docker.com/compose/compose-file/)
+
+## Sécurité / Secrets (à améliorer hors scope du TP)
+
+- TODO: remplacer les identifiants de démonstration (utilisateurs et mots de passe MySQL) et stocker les info sensible en dehors du dépôt.
+- Recommandations:
+  - Utiliser des variables d’environnement via un fichier `.env` non versionné.
+  - Chiffrer les fichiers de configuration sensibles (YAML/TXT) avec un outil comme [rage](https://github.com/str4d/rage) ou un gestionnaire de secrets (ex.: Pulumi Secrets, HashiCorp Vault, AWS Secrets Manager).
+  - Déchiffrer au runtime dans le pipeline CI/CD ou à l’entrée du conteneur.
 
 <p align="right">(<a href="#readme-top">retour en haut</a>)</p>  
