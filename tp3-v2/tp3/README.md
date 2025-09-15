@@ -1,11 +1,53 @@
-# TP3 - Service Web avec Équilibrage de Charge
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/majeurbilly/ISS---TP3">
+    <img src="https://img.icons8.com/color/100/000000/docker.png" alt="Docker Logo" width="100" height="100">
+  </a>
 
-## 📋 Informations du Projet
-- **Nom du projet** : TP3 - Mise en place d'un service Web avec Docker Compose
-- **Date** : Décembre 2024
-- **Description** : Infrastructure web complète avec équilibrage de charge utilisant Nginx, Apache, PHP-FPM et MySQL
+  <h3 align="center">TP3 - Service Web avec Équilibrage de Charge 🚀</h3>
 
-## 🏗️ Architecture
+  <p align="center">
+    Infrastructure web complète avec équilibrage de charge utilisant Docker Compose
+    <br />
+    <a href="#about"><strong>Explorer l'architecture »</strong></a>
+      <br />
+      <br />
+      <a href="https://github.com/majeurbilly/ISS---TP3/issues/new?assignees=&labels=bug&template=01_BUG_REPORT.md&title=bug%3A+">Signaler un Bug</a>
+      ·
+      <a href="https://github.com/majeurbilly/ISS---TP3/issues/new?assignees=&labels=enhancement&template=02_FEATURE_REQUEST.md&title=feat%3A+">Demander une Fonctionnalité</a>
+      ·
+      <a href="https://github.com/majeurbilly/ISS---TP3/issues/new?assignees=&labels=question&template=04_SUPPORT_QUESTION.md&title=support%3A+">Poser une Question</a>
+  </p>
+</div>
+
+
+
+  ## Table des Matières
+  <ol>
+    <li>
+      <a href="#about">À Propos</a>
+      <ul>
+        <li><a href="#built-with">Technologies Utilisées</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Démarrage</a>
+      <ul>
+        <li><a href="#prerequisites">Prérequis</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Utilisation</a></li>
+    <li><a href="#monitoring-tools-overview">Aperçu des Outils de Surveillance</a></li>
+    <li><a href="#authors--contributors">Auteurs et Contributeurs</a></li>
+    <li><a href="#acknowledgments">Remerciements</a></li>
+  </ol>
+
+
+
+<!-- À PROPOS DU PROJET -->
+## À Propos
 
 Ce projet implémente une architecture de service web avec équilibrage de charge selon le schéma suivant :
 
@@ -13,176 +55,145 @@ Ce projet implémente une architecture de service web avec équilibrage de charg
 www.tp3.com → Nginx (Équilibreur) → Serveur Apache 1/2 → PHP-FPM → MySQL
 ```
 
-### 🔧 Composants
-
-- **Nginx** : Équilibreur de charge (Load Balancer)
-- **Apache (httpd)** : Serveurs web (2 instances identiques)
-- **PHP-FPM** : Processeurs PHP FastCGI (2 instances)
-- **MySQL** : Bases de données (2 instances avec volumes persistants)
-
-### 🌐 Réseaux
+### Architecture des Réseaux
 
 - **front_net** : Réseau frontal pour la communication externe
 - **back1_net** : Réseau arrière pour serveur 1 (Apache + PHP + MySQL)
 - **back2_net** : Réseau arrière pour serveur 2 (Apache + PHP + MySQL)
 
-## 📁 Structure des Fichiers
+<details>
+ <summary>
+    <a href="#images">
+      <img src="https://img.icons8.com/color/40/000000/docker.png" alt="Architecture Docker" height="40">
+    </a>
+ </summary>
+<br>
+🏗️ Architecture Docker Compose  
+<img src="https://img.icons8.com/color/400/000000/docker.png" alt="Architecture Docker">
 
-```
-tp3/
-├── docker-compose.yml          # Configuration principale Docker Compose
-├── nginx/
-│   ├── Dockerfile             # Image Nginx personnalisée
-│   └── default.conf           # Configuration Nginx avec upstream
-├── serveur1/
-│   ├── httpd.conf             # Configuration Apache pour serveur 1
-│   └── www/
-│       └── index.php          # Page web serveur 1
-├── serveur2/
-│   ├── httpd.conf             # Configuration Apache pour serveur 2
-│   └── www/
-│       └── index.php          # Page web serveur 2
-├── php1/
-│   ├── Dockerfile             # Image PHP-FPM pour serveur 1
-│   └── www.conf               # Configuration PHP-FPM
-├── php2/
-│   ├── Dockerfile             # Image PHP-FPM pour serveur 2
-│   └── www.conf               # Configuration PHP-FPM
-├── mysql1/                    # (Répertoire non utilisé - utilise image officielle)
-└── mysql2/                    # (Répertoire non utilisé - utilise image officielle)
-```
+</details>
 
-## ⚙️ Configuration
+### Technologies Utilisées
 
-### 🔄 Nginx (Équilibreur de Charge)
-- **Upstream** : Définit les serveurs backend (tp3_httpd1, tp3_httpd2)
-- **Server** : Écoute sur le port 80, proxy vers le backend
-- **Équilibrage** : Distribution en round-robin par défaut
+- **Docker Compose** - Orchestration des conteneurs
+- **Nginx** - Équilibreur de charge (Load Balancer)
+- **Apache (httpd)** - Serveurs web (2 instances identiques)
+- **PHP-FPM** - Processeurs PHP FastCGI (2 instances)
+- **MySQL** - Bases de données (2 instances avec volumes persistants)
 
-### 🌐 Apache (httpd)
-- **Modules** : proxy, proxy_fcgi pour communication avec PHP-FPM
-- **DocumentRoot** : /var/www/html
-- **Proxy** : Redirection des fichiers .php vers PHP-FPM
+## Démarrage
 
-### 🐘 PHP-FPM
-- **Listen** : 0.0.0.0:9000
-- **Extensions** : pdo, pdo_mysql pour connexion MySQL
-- **Gestionnaire de processus** : Configuration dynamique
+### Prérequis
 
-### 🗄️ MySQL
-- **Base de données** : tp3db
-- **Utilisateur** : tp3user / tp3pass
-- **Volumes persistants** : mysql1_data, mysql2_data
+Pour travailler avec ce projet, vous devez avoir :
 
-## 🚀 Utilisation
+- **Docker Desktop** - Version 4.0 ou plus récente
+- **Docker Compose** - Version 2.0 ou plus récente
+- **Git** - Pour cloner le dépôt
 
-### ▶️ Démarrage des Services
-```bash
-docker-compose up -d
-```
+### Installation
 
-### 🔍 Vérification du Fonctionnement
-```bash
-# Vérifier les conteneurs
-docker-compose ps
+1. Ouvrez votre **terminal**.
+2. Clonez le dépôt :
+   ```bash
+   git clone https://github.com/majeurbilly/ISS---TP3.git
+   ```
+3. Naviguez vers le répertoire du projet :
+   ```bash
+   cd ISS---TP3
+   ```
+4. Démarrez Docker Desktop et attendez qu'il s'initialise
+5. Lancez le programme :
+   ```bash
+   docker-compose up -d
+   ```
 
-# Voir les logs
-docker-compose logs nginx
-docker-compose logs tp3_httpd1
-docker-compose logs tp3_httpd2
+## Utilisation
 
-# Tester l'accès
-curl http://localhost
-```
+### Services Backend
 
-### ⏹️ Arrêt et Nettoyage
-```bash
-# Arrêter les services
-docker-compose down
+1. Dans le répertoire racine du projet, démarrez tous les services :
+   ```bash
+   docker-compose up -d
+   ```
 
-# Arrêter et supprimer les volumes
-docker-compose down -v
+2. Vérifiez le statut des conteneurs :
+   ```bash
+   docker-compose ps
+   ```
 
-# Supprimer les images
-docker-compose down --rmi all
-```
+3. Consultez les logs :
+   ```bash
+   docker-compose logs nginx
+   docker-compose logs tp3_httpd1
+   docker-compose logs tp3_httpd2
+   ```
 
-## 🧪 Test de l'Équilibrage de Charge
+4. Testez l'équilibrage de charge :
+   ```bash
+   curl http://localhost
+   # Rafraîchissez plusieurs fois pour voir l'alternance des serveurs
+   ```
+
+5. Arrêtez et nettoyez :
+   ```bash
+   docker-compose down
+   ```
+
+### Test d'Équilibrage de Charge
 
 1. Accéder à http://localhost (ou www.tp3.com si configuré dans /etc/hosts)
 2. Rafraîchir la page plusieurs fois
 3. Observer l'alternance entre "Serveur 1" et "Serveur 2"
 4. Vérifier la connexion à la base de données sur chaque serveur
 
-## 📹 Démonstration avec VHS
+## Aperçu des Outils de Surveillance
 
-Ce projet inclut une démonstration automatisée créée avec [VHS](https://github.com/charmbracelet/vhs) - un outil pour créer des enregistrements de terminal.
-
-### 🎬 Génération de la Démonstration
-
-#### Option 1 : Script de Démonstration (Windows)
-
-```cmd
-# Script batch (recommandé)
-demo.bat
-
-# Ou script PowerShell
-.\demo-simple.ps1
-```
-
-#### Option 2 : VHS pour GIF animé
-
-Pour générer un GIF de démonstration avec VHS :
-
+### **Logs Docker Compose**
 ```bash
-# Installer VHS (si pas déjà installé)
-# Sur macOS avec Homebrew :
-brew install vhs
+# Voir tous les logs
+docker-compose logs
 
-# Sur Linux/Windows avec Go :
-go install github.com/charmbracelet/vhs@latest
-
-# Installer ttyd (requis pour VHS sur Windows)
-# Voir INSTALL-TTYD.md pour les instructions détaillées
-
-# Générer la démonstration
-vhs demo.tape
-
-# Ou version optimisée pour Windows
-vhs demo-windows.tape
+# Voir les logs d'un service spécifique
+docker-compose logs nginx
+docker-compose logs tp3_httpd1
+docker-compose logs tp3_php1
+docker-compose logs tp3_mysql1
 ```
 
-Le script `demo.tape` démontre :
-- ✅ Démarrage des services Docker Compose
-- ✅ Vérification de l'état des conteneurs
-- ✅ Test de l'équilibrage de charge avec des requêtes multiples
-- ✅ Alternance entre les serveurs 1 et 2
-- ✅ Vérification de la connectivité aux bases de données
-- ✅ Affichage des logs et statistiques
+### **Statut des Conteneurs**
+```bash
+# Vérifier les conteneurs en cours d'exécution
+docker-compose ps
 
-### 📸 Capture d'Écran
+# Vérifier la santé des conteneurs
+docker-compose top
+```
 
-Le script VHS génère également une capture d'écran finale (`demo-final.png`) et un GIF animé (`demo.gif`) montrant le fonctionnement complet de l'infrastructure.
+### **Inspection des Réseaux**
+```bash
+# Lister les réseaux
+docker network ls
 
-## 📚 Sites de Référence
+# Inspecter un réseau spécifique
+docker network inspect tp3_front_net
+docker network inspect tp3_back1_net
+docker network inspect tp3_back2_net
+```
 
-- [Documentation Docker](https://docs.docker.com/)
-- [Documentation Nginx](https://nginx.org/en/docs/)
-- [Documentation Apache HTTP Server](https://httpd.apache.org/docs/)
-- [Documentation PHP-FPM](https://www.php.net/manual/en/install.fpm.php)
-- [Documentation MySQL](https://dev.mysql.com/doc/)
-- [Docker Compose Documentation](https://docs.docker.com/compose/)
+## Auteurs et Contributeurs
 
-## 🎯 Objectifs Atteints
+- **Billy Major** - *Travail initial* - [majeurbilly](https://github.com/majeurbilly)
 
-✅ Installation complète d'un site Web avec équilibrage de charge  
-✅ Utilisation de Nginx comme équilibreur/répartiteur de charge  
-✅ Utilisation d'Apache (httpd) comme serveur de contenus  
-✅ Utilisation de php-fpm comme FastCGI  
-✅ Utilisation de MySQL comme serveur de base de données  
-✅ Services en conteneurs indépendants  
-✅ Serveurs Web identiques avec distinction visuelle  
-✅ Réseaux avant et arrière configurés  
-✅ Configuration httpd.conf montée par point de montage  
-✅ Contenu des serveurs httpd monté par point de montage  
-✅ Volumes de données MySQL persistants  
+## Remerciements
+
+Remerciements :
+
+* [Documentation Docker](https://docs.docker.com/)
+* [Documentation Nginx](https://nginx.org/en/docs/)
+* [Documentation Apache HTTP Server](https://httpd.apache.org/docs/)
+* [Documentation PHP-FPM](https://www.php.net/manual/en/install.fpm.php)
+* [Documentation MySQL](https://dev.mysql.com/doc/)
+* [Documentation Docker Compose](https://docs.docker.com/compose/)
+
+<p align="right">(<a href="#readme-top">retour en haut</a>)</p>  
