@@ -79,7 +79,19 @@ Chaque instance MySQL dispose d'une configuration personnalisée (`my.cnf`) opti
  </summary>
 <br>
 🏗️ Architecture Docker Compose  
-<img src="https://img.icons8.com/color/400/000000/docker.png" alt="Architecture Docker">
+<img src="./docs/images/Screenshot_1.png" alt="...">
+<br>
+<img src="./docs/images/Screenshot_2.png" alt="...">
+<br>
+<img src="./docs/images/Screenshot_3.png" alt="...">
+<br>
+<img src="./docs/images/Screenshot_4.png" alt="...">
+<br>
+<img src="./docs/images/Screenshot_5.png" alt="...">
+<br>
+<img src="./docs/images/Screenshot_6.png" alt="...">
+<br>
+
 
 </details>
 
@@ -208,6 +220,17 @@ docker-compose exec tp3_mysql2 mysql -u root -prootpass2 -e "SHOW VARIABLES LIKE
 # Vérifier les tables de démonstration
 docker-compose exec tp3_mysql1 mysql -u tp3user -ptp3pass tp3db -e "SELECT * FROM demo;"
 ```
+
+## Vidéo de Démonstration
+
+🎥 **Vidéo de démonstration complète** : [https://www.youtube.com/watch?v=vv69r4etJvo](https://www.youtube.com/watch?v=vv69r4etJvo)
+
+Cette vidéo de 8 minutes démontre :
+- Le lancement des conteneurs Docker
+- L'affichage des sites web avec équilibrage de charge
+- L'analyse des journaux (logs) des services
+- L'arrêt et le nettoyage des conteneurs
+- L'explication des configurations et de l'architecture
 
 ## Auteurs et Contributeurs
 
